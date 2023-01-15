@@ -1,0 +1,172 @@
+﻿
+@{
+    ViewData["Title"] = "Edit";
+}
+
+@model BikeZilla.Models.ViewModel.BikeViewModel;
+@using BikeZilla.Extension;
+
+<br />
+
+<h2 class="text-info">Update Bike</h2>
+
+
+<br />
+
+<form method="post" enctype="multipart/form-data">
+    @*include this two hidden field, to edit the data, else it will add new record instead of edit*@
+    <input hidden asp-for="Bike.Id" />
+    <input hidden asp-for="Bike.ImagePath" />
+
+    <div class="form-group row">
+        <div class="col-2">
+            <label asp-for="Makes"></label>
+        </div>
+        <div class="col-4">
+            <select asp-for="Bike.MakeId" asp-items="Model.Makes.ToSelectListItems()" class="form-control" id="Make"></select>
+            <span asp-validation-for="Bike.MakeId" class="text-danger"></span>
+        </div>
+
+        <div class="col-auto">
+            <label asp-for="Bike.ImagePath">Image File</label>
+        </div>
+        <div class="col-4">
+            <input type="file" asp-for="Bike.ImagePath" name="Image File" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-2">
+            <label asp-for="Models"></label>
+        </div>
+        <div class="col-4">
+            <select asp-for="Bike.ModelId" asp-items="Model.Models.ToSelectListItems()" class="form-control" id="Model"></select>
+            <span asp-validation-for="Bike.ModelId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-2">
+            <label asp-for="Bike.Year"></label>
+        </div>
+        <div class="col-4">
+            <input asp-for="Bike.Year" class="form-control" />
+            <span asp-validation-for="Bike.Year" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-2">
+            <label asp-for="Bike.Mileage"></label>
+        </div>
+        <div class="col-4">
+            <input asp-for="Bike.Mileage" class="form-control" />
+            <span asp-validation-for="Bike.Mileage" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-2">
+            <label asp-for="Bike.Price"></label>
+        </div>
+        <div class="col-4">
+            <input asp-for="Bike.Price" class="form-control" />
+            <span asp-validation-for="Bike.Price" class="text-danger"></span>
+        </div>
+
+        <div class="col-1">
+            <label asp-for="Bike.Currency"></label>
+        </div>
+        <div class="col-3">
+            <select asp-for="Bike.Currency" asp-items="Model.Currencies.ToSelectListItems()" class="form-control"></select>
+            <span asp-validation-for="Bike.Currency" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-2">
+            <label asp-for="Bike.Features"></label>
+        </div>
+        <div class="col-4">
+            <textarea asp-for="Bike.Features" class="form-control"></textarea>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-2">
+            <label asp-for="Bike.SellarName"></label>
+        </div>
+        <div class="col-4">
+            <input asp-for="Bike.SellarName" class="form-control" />
+            <span asp-validation-for="Bike.SellarName" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-2">
+            <label asp-for="Bike.SellarEmail"></label>
+        </div>
+        <div class="col-4">
+            <input asp-for="Bike.SellarEmail" class="form-control" />
+            <span asp-validation-for="Bike.SellarEmail" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-2">
+            <label asp-for="Bike.SellerPhone"></label>
+        </div>
+        <div class="col-4">
+            <input asp-for="Bike.SellerPhone" class="form-control" />
+            <span asp-validation-for="Bike.SellerPhone" class="text-danger"></span>
+        </div>
+    </div>
+
+    <br />
+
+    <div>
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a asp-action="index" class="btn btn-success">Back</a>
+    </div>
+</form>
+
+
+<script>
+    $(document).ready(function () {
+        var makeDD = $('#Make');
+        var modelDD = $('#Model');
+
+        //modelDD.prop('disabled', true); //make model dropdown property enable
+
+        makeDD.change(function () {
+            if (makeDD.val == "0") {
+                modelDD.prop('disabled', true);
+                modelDD.val == "0";
+            }
+            else {
+                //call for calling endpoint
+                //.ajax method allow web pages to update asyncronously by data web server
+                $.ajax({ //api calling
+                    //3 parameter
+                    //url: "/api/models/1", //endpoint
+                    url: "/api/models/"+ $(this).val(), //this refering to makeDD
+                    method: "get", //get, post, delete
+                    //callback function
+                    //callback function received data from api
+                    success: function (data) {
+                        modelDD.prop('disabled', false);
+                        modelDD.empty(); //make model DD empty
+                        //using append method add data received from api endpoint
+                        modelDD.append($('<option/>', { value: '0', text: '--Select--' }));
+                        //iterate through each data
+                        $(data).each(function (index, item) {
+                            modelDD.append($('<option/>', { value: item.id, text: item.name })); //use small letter here
+                        });
+                    }
+                })
+            }
+        })
+
+
+    });
+</script>

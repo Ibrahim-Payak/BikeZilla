@@ -1,0 +1,95 @@
+﻿@{
+    ViewData["Title"] = "Bike Index";
+    ViewData["Controller"] = "Bike";
+    ViewData["Action"] = "Index";
+}
+
+@*@model IEnumerable<BikeZilla.Models.Bike>;*@
+@*as we are passign diff. type now*@
+@model cloudscribe.Pagination.Models.PagedResult<Bike>;
+@using BikeZilla.Helper;
+
+<br />
+<br />
+
+
+<form method="get" asp-action="Index">
+    <div>
+        <p>
+            Find Make: <input type="text" name="searchString" value="@ViewBag.currentSearch"/>
+            <button class="btn btn-info">Search</button> |
+            <a asp-action="Index">Remove Filter</a>
+        </p>
+    </div>
+</form>
+
+<div class="row">
+    <div class="col-6">
+        <h2 class="text-info">Bikes</h2>
+    </div>
+    @if (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Executive))
+    {
+        <div class="col-6 text-right">
+            <a class="btn btn-info" asp-controller="Bike" asp-action="Create"><i class="fa-sharp fa-solid fa-motorcycle"></i> &nbsp; Add New Bike</a>
+        </div>
+    }
+    
+
+    <br />
+
+    <div class="col-12">
+        <table class="table table-striped border">
+            <tr class="table-info">
+                <th>Bike Photo</th>
+                <th>Bike Details</th>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewBag.sortOrderParam" asp-route-pageNumber="@Model.PageNumber">Price</a>
+                </th>
+                <th>Seller Information</th>
+                @if (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Executive))
+                {
+                    <th></th>
+                }
+                else
+                {
+                    <th class="text-right">View Details</th>
+                }
+            </tr>
+            @foreach (var item in Model.Data)
+            {
+                <tr>
+                    <td><img src="@Html.DisplayFor(m => item.ImagePath)" height="100px" width="150px"></td>
+                    <td>
+                        <b>@Html.DisplayFor(m => item.Make.Name) (@Html.DisplayFor(m => item.Year))</b> <br />
+                        <b>Model: </b>@Html.DisplayFor(m => item.Model.Name)<br />
+                        <b>Mileage: </b>@Html.DisplayFor(m => item.Mileage)
+                    </td>
+                    <td>@Html.DisplayFor(m => item.Price) @Html.DisplayFor(m => item.Currency)</td>
+                    <td>
+                        <b>Name: </b>@Html.DisplayFor(m => item.SellarName) <br />
+                        <b>Email: </b>@Html.DisplayFor(m => item.SellarEmail) <br />
+                        <b>Phone: </b>@Html.DisplayFor(m => item.SellerPhone) <br />
+
+                    </td>
+
+                    @if (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Executive))
+                    {
+                        <partial name="_TableButtonPartial" model="@item.Id" />
+                    }
+                    else
+                    {
+                        <td class="text-right">
+                            <div class="btn-group">
+                                <a type="button" class="btn btn-success rounded-0" href="@Url.Action("View/"+item.Id)"><i class="fa-sharp fa-solid fa-circle-info"></i></a>
+                            </div>
+                        </td>
+                    }
+
+                </tr>
+            }
+        </table>
+
+        <partial name="_Pagination" view-data="ViewData" model="Model" />
+    </div>
+</div>
+

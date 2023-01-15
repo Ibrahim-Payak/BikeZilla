@@ -1,0 +1,44 @@
+﻿@model cloudscribe.Pagination.Models.PagedResult<Make>;
+
+
+@{
+    ViewData["Title"] = "Index";
+    ViewData["Controller"] = "Make";
+    ViewData["Action"] = "Index";
+}
+
+<br />
+<br />
+
+<div class="row">
+    <div class="col-6">
+        <h2 class="text-info">Makes of Vehicle</h2>
+    </div>
+
+    <div class="col-6 text-right">
+        <a class="btn btn-info text-white" asp-action="create"><i class="fa-sharp fa-solid fa-motorcycle"></i> &nbsp; Add New Make</a>
+    </div>
+
+    <br />
+    <br />
+    <div class="col-12">
+        <table class="table table-striped border">
+            <tr class="table-info">
+                <th>Make</th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model.Data)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(m => item.Name)
+                    </td>
+                    <partial name="_TableButtonPartial" model="@item.Id" />
+                </tr>
+            }
+        </table>
+
+        <partial name="_Pagination" view-data="ViewData" model="Model" />
+    </div>
+</div>

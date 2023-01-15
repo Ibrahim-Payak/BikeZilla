@@ -1,0 +1,29 @@
+﻿@model BikeZilla.Models.Make;
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+
+<br />
+
+<h2 class="text-info">Update Make of Vehicle</h2>
+
+@*here method is post since we r going to post data to server and action is Create
+    asp-for auto. find property name in model class  *@
+<form method="post" action="Edit">
+    <div class="form-group row">
+        <div class="col-2">
+            <label asp-for="Name"></label>
+        </div>
+        <div class="col-4">
+            <input asp-for="Name" />
+        </div>
+        <br />
+        <div>
+            <button type="submit" class="btn btn-primary" asp-route-id="@Model.Id">Update</button>
+            <a asp-action="index" class="btn btn-success">Back</a>
+        </div>
+    </div>
+</form>
+
